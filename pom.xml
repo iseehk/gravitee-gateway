@@ -220,14 +220,13 @@
         <gravitee-reporter-api.version>1.12.0</gravitee-reporter-api.version>
         <gravitee-alert-api.version>1.0.0</gravitee-alert-api.version>
         <gravitee-service-discovery-api.version>1.0.0</gravitee-service-discovery-api.version>
-        <jetty.version>9.2.24.v20180105</jetty.version>
-        <httpclient.version>4.5.2</httpclient.version>
+        <httpclient.version>4.5.7</httpclient.version>
         <reflections.version>0.9.10</reflections.version>
         <snakeyaml.version>1.21</snakeyaml.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-validator.version>1.4.1</commons-validator.version>
         <json-path.version>2.2.0</json-path.version>
-        <wiremock.version>2.19.0</wiremock.version>
+        <wiremock.version>2.21.0</wiremock.version>
         <guava.version>26.0-jre</guava.version>
     </properties>
 </project>

@@ -15,53 +15,9 @@
  */
 package io.gravitee.gateway.core.processor;
 
-import io.gravitee.gateway.api.ExecutionContext;
-import io.gravitee.gateway.api.Request;
-import io.gravitee.gateway.api.Response;
-
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class ProcessorContext {
-
-    private Request request;
-
-    private Response response;
-
-    private ExecutionContext context;
-
-    private ProcessorContext(Request request, Response response, ExecutionContext context) {
-        this.request = request;
-        this.response = response;
-        this.context = context;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
-    }
-
-    public ExecutionContext getContext() {
-        return context;
-    }
-
-    public void setContext(ExecutionContext context) {
-        this.context = context;
-    }
-
-    public static ProcessorContext from(Request request, Response response, ExecutionContext context) {
-        return new ProcessorContext(request, response, context);
-    }
+public interface ProcessorContext {
 }

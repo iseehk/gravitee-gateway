@@ -101,8 +101,8 @@ public class ResponsePolicyChainTest {
 
         chain.doNext(null, null);
 
-        verify(policy, atLeastOnce()).onResponse(null, null, chain, executionContext);
-        verify(policy2, atLeastOnce()).onResponse(null, null, chain, executionContext);
+        verify(policy, atLeastOnce()).onResponse(chain, null, null, executionContext);
+        verify(policy2, atLeastOnce()).onResponse(chain, null, null, executionContext);
     }
 
     @Test
@@ -121,10 +121,12 @@ public class ResponsePolicyChainTest {
 
     @Test
     public void doNext_multiplePolicy_throwError() throws Exception {
-        ExecutionContext executionContext = mock(ExecutionContext.class);
         Request request = mock(Request.class);
         Metrics metrics = Metrics.on(System.currentTimeMillis()).build();
         when(request.metrics()).thenReturn(metrics);
+
+        ExecutionContext executionContext = mock(ExecutionContext.class);
+        when(executionContext.request()).thenReturn(request);
 
         PolicyChain chain = ResponsePolicyChain.create(
                 Arrays.asList(policy2, policy3), executionContext);
@@ -132,8 +134,8 @@ public class ResponsePolicyChainTest {
         chain.doNext(request, null);
 
         verify(request, atLeastOnce()).metrics();
-        verify(policy3, atLeastOnce()).onResponse(request, null, chain, executionContext);
-        verify(policy2, never()).onResponse(request, null, chain, executionContext);
+        verify(policy3, atLeastOnce()).onResponse(chain, request, null, executionContext);
+        verify(policy2, never()).onResponse(chain, request, null, executionContext);
     }
 
     @Test
@@ -154,7 +156,7 @@ public class ResponsePolicyChainTest {
 
         verify(stream, atLeastOnce()).bodyHandler(any(Handler.class));
         verify(stream, atLeastOnce()).endHandler(any(Handler.class));
-        verify(policy4, atLeastOnce()).onResponse(null, null, chain, executionContext);
+        verify(policy4, atLeastOnce()).onResponse(chain, null, null, executionContext);
     }
 
     @Test
@@ -187,7 +189,7 @@ public class ResponsePolicyChainTest {
         inOrder.verify(streamPolicy5, atLeastOnce()).bodyHandler(any(Handler.class));
         inOrder.verify(streamPolicy5, atLeastOnce()).endHandler(any(Handler.class));
 
-        verify(policy4, atLeastOnce()).onResponse(null, null, chain, executionContext);
+        verify(policy4, atLeastOnce()).onResponse(chain, null, null, executionContext);
     }
 
     @Test
@@ -226,6 +228,6 @@ public class ResponsePolicyChainTest {
         inOrder.verify(streamPolicy5, atLeastOnce()).bodyHandler(any(Handler.class));
         inOrder.verify(streamPolicy5, atLeastOnce()).endHandler(any(Handler.class));
 
-        verify(policy4, atLeastOnce()).onResponse(null, null, chain, executionContext);
+        verify(policy4, atLeastOnce()).onResponse(chain, null, null, executionContext);
     }
 }

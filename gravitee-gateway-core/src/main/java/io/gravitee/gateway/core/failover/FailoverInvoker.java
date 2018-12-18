@@ -21,6 +21,7 @@ import io.gravitee.definition.model.Failover;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.buffer.Buffer;
+import io.gravitee.gateway.api.context.MutableExecutionContext;
 import io.gravitee.gateway.api.handler.Handler;
 import io.gravitee.gateway.api.proxy.ProxyConnection;
 import io.gravitee.gateway.api.proxy.ProxyResponse;
@@ -47,13 +48,15 @@ public class FailoverInvoker extends EndpointInvoker implements InitializingBean
     private CircuitBreaker circuitBreaker;
 
     @Override
-    public Request invoke(ExecutionContext executionContext, Request serverRequest, ReadStream<Buffer> stream, Handler<ProxyConnection> connectionHandler) {
-        final Request failoverServerRequest = new FailoverRequest(serverRequest);
+    public void invoke(ExecutionContext context, ReadStream<Buffer> stream, Handler<ProxyConnection> connectionHandler) {
+        final Request failoverServerRequest = new FailoverRequest(context.request());
+
+        ((MutableExecutionContext)context).request(failoverServerRequest);
 
         circuitBreaker.execute(new io.vertx.core.Handler<Future<ProxyConnection>>() {
             @Override
             public void handle(Future<ProxyConnection> event) {
-                FailoverInvoker.super.invoke(executionContext, failoverServerRequest, stream, proxyConnection -> {
+                FailoverInvoker.super.invoke(context, stream, proxyConnection -> {
                     proxyConnection.exceptionHandler(event::fail);
                     proxyConnection.responseHandler(
                             response -> event.complete(new FailoverProxyConnection(proxyConnection, response)));
@@ -73,8 +76,6 @@ public class FailoverInvoker extends EndpointInvoker implements InitializingBean
                 }
             }
         });
-
-        return failoverServerRequest;
     }
 
     @Override
